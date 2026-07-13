@@ -10,13 +10,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="/css/app.css?v=16" rel="stylesheet">
+    <link href="/css/app.css?v=17" rel="stylesheet">
     <script>
         (function () {
             try {
                 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-                // kiu-motion: hide .anim-* until .is-visible (prevents paint→hide flash)
-                // kiu-page-enter: brief fade/rise on .kiu-main-content
+                // kiu-motion: allow .reveal-ready hide; kiu-page-enter: main fade/rise
                 document.documentElement.classList.add('kiu-motion', 'kiu-page-enter');
                 if ('onpagereveal' in window) {
                     window.addEventListener('pagereveal', function (e) {
@@ -52,6 +51,33 @@
             @include('partials.flash')
             @yield('content')
         </main>
+<script>
+    // Reveal setup before Bootstrap so above-fold content is never stuck hidden
+    (function () {
+        if (!document.documentElement.classList.contains('kiu-motion')) return;
+        if (!('IntersectionObserver' in window)) return;
+        const animSel = '.anim-fade-up, .anim-fade-in, .anim-slide-in-right, .anim-pop';
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        document.querySelectorAll(animSel).forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < vh * 0.96 && rect.bottom > 0) {
+                el.classList.add('is-visible');
+            } else {
+                el.classList.add('reveal-ready');
+                io.observe(el);
+            }
+        });
+        window.__kiuRevealReady = true;
+    })();
+</script>
     </div>
 </div>
 
@@ -146,34 +172,35 @@
         if (document.documentElement.classList.contains('kiu-page-enter')) {
             window.setTimeout(() => {
                 document.documentElement.classList.remove('kiu-page-enter');
-            }, 340);
+            }, 320);
         }
 
-        if (!prefersReduced && 'IntersectionObserver' in window) {
-            const io = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        io.unobserve(entry.target);
+        // Fallback if the early reveal script did not run
+        if (!window.__kiuRevealReady) {
+            if (!prefersReduced && 'IntersectionObserver' in window) {
+                const io = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            io.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
+                const vh = window.innerHeight || document.documentElement.clientHeight;
+                document.querySelectorAll(animSel).forEach((el) => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < vh * 0.96 && rect.bottom > 0) {
+                        el.classList.add('is-visible');
+                    } else {
+                        el.classList.add('reveal-ready');
+                        io.observe(el);
                     }
                 });
-            }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
-
-            const vh = window.innerHeight || document.documentElement.clientHeight;
-            document.querySelectorAll(animSel).forEach((el) => {
-                const rect = el.getBoundingClientRect();
-                // Above-the-fold rides page-enter only (no stacked element fade)
-                if (rect.top < vh * 0.96 && rect.bottom > 0) {
+            } else {
+                document.querySelectorAll(animSel).forEach((el) => {
                     el.classList.add('is-visible');
-                } else {
-                    el.classList.add('reveal-ready');
-                    io.observe(el);
-                }
-            });
-        } else {
-            document.querySelectorAll(animSel).forEach((el) => {
-                el.classList.add('is-visible');
-            });
+                });
+            }
         }
 
         if (!prefersReduced) {

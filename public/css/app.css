@@ -628,11 +628,8 @@ html.kiu-page-exit{cursor:wait}
   to{opacity:1;transform:translateY(0) scale(1)}
 }
 .anim-fade-up,.anim-fade-in,.anim-slide-in-right,.anim-pop{opacity:1}
-/* Hide until revealed when motion is enabled (set in <head> before first paint) */
-html.kiu-motion .anim-fade-up:not(.is-visible),
-html.kiu-motion .anim-fade-in:not(.is-visible),
-html.kiu-motion .anim-slide-in-right:not(.is-visible),
-html.kiu-motion .anim-pop:not(.is-visible){opacity:0}
+/* Only hide elements explicitly queued for scroll reveal (below-fold) */
+html.kiu-motion .reveal-ready:not(.is-visible){opacity:0;transform-style:preserve-3d}
 .reveal-ready.is-visible.anim-fade-up{animation:kiuRise .4s cubic-bezier(.22,1,.36,1) both}
 .reveal-ready.is-visible.anim-fade-in{animation:kiuIn .34s ease both}
 .reveal-ready.is-visible.anim-slide-in-right{animation:kiuSlide .4s cubic-bezier(.22,1,.36,1) both}
