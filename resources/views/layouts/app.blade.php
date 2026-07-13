@@ -15,7 +15,7 @@
         (function () {
             try {
                 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-                // kiu-motion: allow .reveal-ready hide; kiu-page-enter: main fade/rise
+                // kiu-motion: enables reveal-ready hide; kiu-page-enter: main fade/rise
                 document.documentElement.classList.add('kiu-motion', 'kiu-page-enter');
                 if ('onpagereveal' in window) {
                     window.addEventListener('pagereveal', function (e) {
@@ -51,33 +51,6 @@
             @include('partials.flash')
             @yield('content')
         </main>
-<script>
-    // Reveal setup before Bootstrap so above-fold content is never stuck hidden
-    (function () {
-        if (!document.documentElement.classList.contains('kiu-motion')) return;
-        if (!('IntersectionObserver' in window)) return;
-        const animSel = '.anim-fade-up, .anim-fade-in, .anim-slide-in-right, .anim-pop';
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    io.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
-        const vh = window.innerHeight || document.documentElement.clientHeight;
-        document.querySelectorAll(animSel).forEach((el) => {
-            const rect = el.getBoundingClientRect();
-            if (rect.top < vh * 0.96 && rect.bottom > 0) {
-                el.classList.add('is-visible');
-            } else {
-                el.classList.add('reveal-ready');
-                io.observe(el);
-            }
-        });
-        window.__kiuRevealReady = true;
-    })();
-</script>
     </div>
 </div>
 
@@ -164,7 +137,6 @@
             }
         });
 
-        // soft reveal on scroll + light 3D tilt on cards
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const animSel = '.anim-fade-up, .anim-fade-in, .anim-slide-in-right, .anim-pop';
 
@@ -175,32 +147,32 @@
             }, 320);
         }
 
-        // Fallback if the early reveal script did not run
-        if (!window.__kiuRevealReady) {
-            if (!prefersReduced && 'IntersectionObserver' in window) {
-                const io = new IntersectionObserver((entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('is-visible');
-                            io.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
-                const vh = window.innerHeight || document.documentElement.clientHeight;
-                document.querySelectorAll(animSel).forEach((el) => {
-                    const rect = el.getBoundingClientRect();
-                    if (rect.top < vh * 0.96 && rect.bottom > 0) {
-                        el.classList.add('is-visible');
-                    } else {
-                        el.classList.add('reveal-ready');
-                        io.observe(el);
+        // Scroll reveal: above-fold stays visible (page-enter covers first paint);
+        // below-fold gets reveal-ready so CSS can hide until observed.
+        if (!prefersReduced && 'IntersectionObserver' in window) {
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        io.unobserve(entry.target);
                     }
                 });
-            } else {
-                document.querySelectorAll(animSel).forEach((el) => {
+            }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
+
+            const vh = window.innerHeight || document.documentElement.clientHeight;
+            document.querySelectorAll(animSel).forEach((el) => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < vh * 0.96 && rect.bottom > 0) {
                     el.classList.add('is-visible');
-                });
-            }
+                } else {
+                    el.classList.add('reveal-ready');
+                    io.observe(el);
+                }
+            });
+        } else {
+            document.querySelectorAll(animSel).forEach((el) => {
+                el.classList.add('is-visible');
+            });
         }
 
         if (!prefersReduced) {
@@ -223,8 +195,7 @@
             });
 
             // Soft exit for same-origin GET navigations.
-            // Browsers with cross-document View Transitions keep default navigation
-            // (@view-transition { navigation: auto } in CSS). Others get a short fade-out.
+            // Cross-document View Transitions keep default nav (@view-transition in CSS).
             const hasCrossDocVT = 'onpagereveal' in window;
             let navigating = false;
 
@@ -271,7 +242,6 @@
                 }
             }, true);
 
-            // Restore from bfcache without sticky exit fade
             window.addEventListener('pageshow', () => {
                 navigating = false;
                 document.documentElement.classList.remove('kiu-page-exit');
