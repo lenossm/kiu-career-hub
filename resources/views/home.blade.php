@@ -34,28 +34,28 @@
             <div class="col-12 col-lg-4">
                 <div class="row g-3">
                     <div class="col-6">
-                        <div class="kiu-stat-card kiu-stat-blue anim-slide-in-right">
+                        <div class="kiu-stat-card kiu-stat-blue kiu-tilt anim-pop">
                             <div class="kiu-stat-icon"><i class="bi bi-briefcase"></i></div>
                             <div class="kiu-stat-label">Student jobs</div>
                             <div class="kiu-stat-value">{{ $stats['student_vacancies'] ?? 0 }}</div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="kiu-stat-card kiu-stat-green anim-slide-in-right anim-delay-1">
+                        <div class="kiu-stat-card kiu-stat-green kiu-tilt anim-pop anim-delay-1">
                             <div class="kiu-stat-icon"><i class="bi bi-building"></i></div>
                             <div class="kiu-stat-label">Faculty roles</div>
                             <div class="kiu-stat-value">{{ $stats['professor_vacancies'] ?? 0 }}</div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="kiu-stat-card kiu-stat-amber anim-slide-in-right anim-delay-2">
+                        <div class="kiu-stat-card kiu-stat-amber kiu-tilt anim-pop anim-delay-2">
                             <div class="kiu-stat-icon"><i class="bi bi-people"></i></div>
                             <div class="kiu-stat-label">Profiles</div>
                             <div class="kiu-stat-value">{{ $students_total ?? 0 }}</div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="kiu-stat-card kiu-stat-slate anim-slide-in-right anim-delay-3">
+                        <div class="kiu-stat-card kiu-stat-slate kiu-tilt anim-pop anim-delay-3">
                             <div class="kiu-stat-icon"><i class="bi bi-send-check"></i></div>
                             <div class="kiu-stat-label">Applications</div>
                             <div class="kiu-stat-value">{{ $stats['applications_total'] ?? 0 }}</div>

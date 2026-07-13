@@ -13,7 +13,7 @@
 
 <{{ $tag }}
     @if($href) href="{{ $href }}" @endif
-    class="kiu-stat-card kiu-stat-{{ $accent }} kiu-lift h-100 text-decoration-none anim-fade-up {{ $attributes->get('class') }}"
+    class="kiu-stat-card kiu-stat-{{ $accent }} kiu-lift kiu-tilt h-100 text-decoration-none anim-pop {{ $attributes->get('class') }}"
 >
     <div class="kiu-stat-icon"><i class="bi {{ $icon }}"></i></div>
     <div class="kiu-stat-label">{{ $label }}</div>

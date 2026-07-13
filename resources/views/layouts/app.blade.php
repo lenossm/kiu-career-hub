@@ -7,10 +7,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="/css/app.css?v=10" rel="stylesheet">
+    <link href="/css/app.css?v=12" rel="stylesheet">
 </head>
 <body class="@yield('body_class')">
 <div class="kiu-ambient" aria-hidden="true"></div>
@@ -121,8 +121,9 @@
             }
         });
 
-        // soft reveal on scroll
+        // soft reveal on scroll + light 3D tilt on cards
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const animSel = '.anim-fade-up, .anim-fade-in, .anim-slide-in-right, .anim-pop';
         if (!prefersReduced && 'IntersectionObserver' in window) {
             const io = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
@@ -133,13 +134,33 @@
                 });
             }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
 
-            document.querySelectorAll('.anim-fade-up, .anim-fade-in, .anim-slide-in-right').forEach((el) => {
+            document.querySelectorAll(animSel).forEach((el) => {
                 el.classList.add('reveal-ready');
                 io.observe(el);
             });
         } else {
-            document.querySelectorAll('.reveal-ready, .anim-fade-up, .anim-fade-in, .anim-slide-in-right').forEach((el) => {
+            document.querySelectorAll(`.reveal-ready, ${animSel}`).forEach((el) => {
                 el.classList.add('is-visible');
+            });
+        }
+
+        if (!prefersReduced) {
+            const tiltTargets = document.querySelectorAll('.kiu-stat-card, .kiu-step-card, .kiu-feature-role');
+            tiltTargets.forEach((card) => {
+                card.classList.add('kiu-tilt');
+                card.addEventListener('pointermove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width;
+                    const y = (e.clientY - rect.top) / rect.height;
+                    const rotY = (x - 0.5) * 12;
+                    const rotX = (0.5 - y) * 10;
+                    card.classList.add('is-tilting');
+                    card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-4px)`;
+                });
+                card.addEventListener('pointerleave', () => {
+                    card.classList.remove('is-tilting');
+                    card.style.transform = '';
+                });
             });
         }
     })();
