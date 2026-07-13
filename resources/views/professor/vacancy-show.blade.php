@@ -8,7 +8,7 @@
         :subtitle="$vacancy->company.' · Deadline '.$vacancy->deadline->format('M j, Y')"
         icon="bi-building"
         :breadcrumbs="[
-            ['label' => 'Faculty opportunities', 'url' => route('professor.portal')],
+            ['label' => 'Opportunities', 'url' => route('professor.portal')],
             ['label' => $vacancy->title, 'url' => route('professor.vacancies.show', $vacancy)],
         ]"
     >

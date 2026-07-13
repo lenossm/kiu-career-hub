@@ -104,9 +104,9 @@
                     <div class="fw-bold"><i class="bi bi-mortarboard me-2"></i>Student applications</div>
                     <a class="btn btn-kiu-soft btn-kiu-sm" href="{{ route('applications.index') }}">All</a>
                 </div>
-                <div class="kiu-section-card-body">
+                <div class="kiu-section-card-body kiu-section-card-body--pad">
                     @forelse($recentApplications as $app)
-                        <div class="d-flex justify-content-between align-items-center gap-2 py-2 border-bottom" style="border-color:var(--border)!important;">
+                        <div class="d-flex justify-content-between align-items-center gap-2 py-3 kiu-list-row">
                             <div style="min-width:0;">
                                 <div class="fw-semibold text-truncate">{{ $app->student->full_name }}</div>
                                 <div class="small table-dashboard-muted text-truncate">{{ $app->vacancy->title }}</div>
@@ -114,7 +114,7 @@
                             <x-status-badge :status="$app->status" />
                         </div>
                     @empty
-                        <div class="py-3 text-white-75 small">No student applications yet.</div>
+                        <div class="kiu-empty-inline">No student applications yet.</div>
                     @endforelse
                 </div>
             </div>
@@ -124,9 +124,9 @@
                     <div class="fw-bold"><i class="bi bi-person-workspace me-2"></i>Faculty applications</div>
                     <a class="btn btn-kiu-soft btn-kiu-sm" href="{{ route('applications.index', ['tab' => 'faculty']) }}">All</a>
                 </div>
-                <div class="kiu-section-card-body">
+                <div class="kiu-section-card-body kiu-section-card-body--pad">
                     @forelse($recentFacultyApplications as $app)
-                        <div class="d-flex justify-content-between align-items-center gap-2 py-2 border-bottom" style="border-color:var(--border)!important;">
+                        <div class="d-flex justify-content-between align-items-center gap-2 py-3 kiu-list-row">
                             <div style="min-width:0;">
                                 <div class="fw-semibold text-truncate">{{ $app->professor->full_name }}</div>
                                 <div class="small table-dashboard-muted text-truncate">{{ $app->vacancy->title }}</div>
@@ -134,7 +134,7 @@
                             <x-status-badge :status="$app->status" />
                         </div>
                     @empty
-                        <div class="py-3 text-white-75 small">No faculty applications yet.</div>
+                        <div class="kiu-empty-inline">No faculty applications yet.</div>
                     @endforelse
                 </div>
             </div>

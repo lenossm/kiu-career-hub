@@ -18,7 +18,7 @@
                         <span>·</span>
                         <a href="{{ route('my.profile.show') }}">My profile</a>
                     @elseif(auth()->user()->isProfessor())
-                        <a href="{{ route('professor.portal') }}">Faculty jobs</a>
+                        <a class="{{ request()->routeIs('professor.portal', 'professor.vacancies.*') ? 'active' : '' }}" href="{{ route('professor.portal') }}">Opportunities</a>
                         <span>·</span>
                         <a href="{{ route('professor.profile.edit') }}">My profile</a>
                     @endif

@@ -3,5 +3,5 @@
 @section('title', 'My Profile')
 
 @section('content')
-    @include('students.show', ['student' => $student, 'self' => true])
+    @include('students._detail', ['student' => $student, 'self' => true])
 @endsection
