@@ -34,12 +34,12 @@
         </a>
     </div>
 
-    <div class="row g-3 mb-4">
+    <div class="row kiu-stats-row mb-4">
         <div class="col-12 col-sm-6 col-xl-3">
-            <x-stat-card label="Open — students" :value="$stats['vacancies_student']" icon="bi-mortarboard" href="{{ route('vacancies.index', ['audience' => 'student', 'status' => 'pending']) }}" accent="blue" />
+            <x-stat-card label="Open student jobs" :value="$stats['vacancies_student']" icon="bi-mortarboard" href="{{ route('vacancies.index', ['audience' => 'student', 'status' => 'pending']) }}" accent="blue" />
         </div>
         <div class="col-12 col-sm-6 col-xl-3">
-            <x-stat-card label="Open — faculty" :value="$stats['vacancies_faculty']" icon="bi-building" href="{{ route('vacancies.index', ['audience' => 'professor', 'status' => 'pending']) }}" accent="purple" class="anim-delay-1" />
+            <x-stat-card label="Open faculty roles" :value="$stats['vacancies_faculty']" icon="bi-building" href="{{ route('vacancies.index', ['audience' => 'professor', 'status' => 'pending']) }}" accent="purple" class="anim-delay-1" />
         </div>
         <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-card label="Applications" :value="$stats['applications_total']" icon="bi-send-check" href="{{ route('applications.index') }}" :hint="$stats['applications_pending'].' pending'" accent="green" class="anim-delay-2" />

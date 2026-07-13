@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="/css/app.css?v=13" rel="stylesheet">
+    <link href="/css/app.css?v=14" rel="stylesheet">
 </head>
 <body class="@yield('body_class')">
 <div class="kiu-ambient" aria-hidden="true"></div>
@@ -145,7 +145,7 @@
         }
 
         if (!prefersReduced) {
-            const tiltTargets = document.querySelectorAll('.kiu-stat-card, .kiu-step-card, .kiu-feature-role');
+            const tiltTargets = document.querySelectorAll('.kiu-step-card, .kiu-feature-role');
             tiltTargets.forEach((card) => {
                 card.classList.add('kiu-tilt');
                 card.addEventListener('pointermove', (e) => {
