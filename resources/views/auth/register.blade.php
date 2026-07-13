@@ -7,7 +7,7 @@
         <div class="col-12 col-lg-8 kiu-auth-card">
             <div class="text-center mb-4 anim-fade-up">
                 <img src="{{ asset('images/logo.svg') }}" alt="KIU" class="kiu-logo-auth mb-3">
-                <h1 class="h3 fw-bold mb-1">Create your account</h1>
+                <h1 class="h2 fw-bold mb-1">Create account</h1>
                 <p class="text-muted-soft mb-0">Pick the role that matches how you'll use Career Hub</p>
             </div>
 
