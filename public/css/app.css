@@ -22,7 +22,12 @@
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{
+  scroll-behavior:smooth;
+  background:var(--ink);
+  background-color:#040B14;
+  color-scheme:dark;
+}
 html,body{min-height:100%}
 body{
   margin:0;
@@ -32,6 +37,7 @@ body{
   color:var(--text);
   line-height:1.55;
   background:var(--ink);
+  background-color:#040B14;
   color-scheme:dark;
 }
 
@@ -576,26 +582,26 @@ select option:hover{
 .kiu-toast{position:fixed;right:1rem;bottom:1rem;z-index:1080}
 .kiu-toast .toast{background:rgba(10,22,38,.95);border:1px solid var(--line);color:var(--text)}
 
-/* PAGE TRANSITIONS (MPA-friendly) */
-@view-transition{navigation:auto}
-::view-transition-old(root){
-  animation:kiuPageOut .2s ease both;
+/* PAGE TRANSITIONS — quiet continuity (no View Transition spectacle, no blank/fade exit) */
+@view-transition{navigation:none}
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*),
+::view-transition-image-pair(*){
+  background:transparent!important;
+  background-color:transparent!important;
 }
+::view-transition-group(root),
+::view-transition-old(root),
 ::view-transition-new(root){
-  animation:kiuPageIn .26s cubic-bezier(.22,1,.36,1) both;
+  animation:none!important;
+  background:var(--ink)!important;
+  background-color:#040B14!important;
 }
-.kiu-main-content{
-  transition:opacity .22s ease, transform .22s cubic-bezier(.22,1,.36,1);
-}
+/* Near-invisible enter: short opacity only — never fade the whole page to blank */
 html.kiu-page-enter .kiu-main-content{
-  animation:kiuPageIn .28s cubic-bezier(.22,1,.36,1) both;
+  animation:kiuPageIn .1s ease both;
 }
-html.kiu-page-exit .kiu-main-content{
-  opacity:0;
-  transform:translateY(6px);
-  pointer-events:none;
-}
-html.kiu-page-exit{cursor:wait}
 
 /* ANIMATIONS */
 @keyframes kiuFloat{
@@ -604,12 +610,8 @@ html.kiu-page-exit{cursor:wait}
   70%{transform:translate3d(-4%,8%,0) scale(.96)}
 }
 @keyframes kiuPageIn{
-  from{opacity:0;transform:translateY(8px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes kiuPageOut{
-  from{opacity:1;transform:translateY(0)}
-  to{opacity:0;transform:translateY(-5px)}
+  from{opacity:.92}
+  to{opacity:1}
 }
 @keyframes kiuRise{
   from{opacity:0;transform:translateY(12px)}
@@ -643,11 +645,8 @@ html.kiu-motion .reveal-ready:not(.is-visible){opacity:0;transform-style:preserv
   .reveal-ready,.anim-fade-up,.anim-fade-in,.anim-slide-in-right,.anim-pop{opacity:1!important;animation:none!important;transform:none!important}
   .btn-kiu,.kiu-lift,.kiu-role-card,.kiu-stat-card,.kiu-step-card,.kiu-tilt{transition:none!important;transform:none!important;animation:none!important}
   .kiu-main-content{transition:none!important;animation:none!important;opacity:1!important;transform:none!important}
-  html.kiu-page-enter .kiu-main-content,
-  html.kiu-page-exit .kiu-main-content{animation:none!important;opacity:1!important;transform:none!important}
+  html.kiu-page-enter .kiu-main-content{animation:none!important;opacity:1!important}
   @view-transition{navigation:none}
-  ::view-transition-old(root),
-  ::view-transition-new(root){animation:none!important}
 }
 
 /* empty state helpers */

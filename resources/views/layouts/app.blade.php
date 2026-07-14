@@ -10,20 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="/css/app.css?v=17" rel="stylesheet">
+    <link href="/css/app.css?v=18" rel="stylesheet">
     <script>
         (function () {
             try {
                 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-                // kiu-motion: enables reveal-ready hide; kiu-page-enter: main fade/rise
+                // kiu-motion: scroll reveal; kiu-page-enter: near-invisible main opacity
                 document.documentElement.classList.add('kiu-motion', 'kiu-page-enter');
-                if ('onpagereveal' in window) {
-                    window.addEventListener('pagereveal', function (e) {
-                        if (e.viewTransition) {
-                            document.documentElement.classList.remove('kiu-page-enter');
-                        }
-                    });
-                }
             } catch (err) {}
         })();
     </script>
@@ -140,15 +133,13 @@
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const animSel = '.anim-fade-up, .anim-fade-in, .anim-slide-in-right, .anim-pop';
 
-        // Keep enter class for the full animation, then clear
         if (document.documentElement.classList.contains('kiu-page-enter')) {
             window.setTimeout(() => {
                 document.documentElement.classList.remove('kiu-page-enter');
-            }, 320);
+            }, 120);
         }
 
-        // Scroll reveal: above-fold stays visible (page-enter covers first paint);
-        // below-fold gets reveal-ready so CSS can hide until observed.
+        // Scroll reveal: above-fold stays visible; below-fold gets reveal-ready.
         if (!prefersReduced && 'IntersectionObserver' in window) {
             const io = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
@@ -192,59 +183,6 @@
                     card.classList.remove('is-tilting');
                     card.style.transform = '';
                 });
-            });
-
-            // Soft exit for same-origin GET navigations.
-            // Cross-document View Transitions keep default nav (@view-transition in CSS).
-            const hasCrossDocVT = 'onpagereveal' in window;
-            let navigating = false;
-
-            function shouldIntercept(a, e) {
-                if (!a || !(a instanceof HTMLAnchorElement)) return false;
-                if (e.defaultPrevented) return false;
-                if (e.button !== 0) return false;
-                if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
-                if (a.target && a.target !== '' && a.target !== '_self') return false;
-                if (a.hasAttribute('download')) return false;
-                const href = a.getAttribute('href');
-                if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) return false;
-                let url;
-                try { url = new URL(a.href, window.location.href); } catch (_) { return false; }
-                if (url.origin !== window.location.origin) return false;
-                if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
-                if (a.closest('form')) return false;
-                return true;
-            }
-
-            document.addEventListener('click', (e) => {
-                if (navigating || hasCrossDocVT) return;
-                const a = e.target.closest?.('a');
-                if (!shouldIntercept(a, e)) return;
-
-                e.preventDefault();
-                navigating = true;
-                document.documentElement.classList.add('kiu-page-exit');
-                const href = a.href;
-                let finished = false;
-                const finish = () => {
-                    if (finished) return;
-                    finished = true;
-                    window.location.href = href;
-                };
-                window.setTimeout(finish, 220);
-                const main = document.querySelector('.kiu-main-content');
-                if (main) {
-                    main.addEventListener('transitionend', (ev) => {
-                        if (ev.target === main && (ev.propertyName === 'opacity' || ev.propertyName === 'transform')) {
-                            finish();
-                        }
-                    }, { once: true });
-                }
-            }, true);
-
-            window.addEventListener('pageshow', () => {
-                navigating = false;
-                document.documentElement.classList.remove('kiu-page-exit');
             });
         }
     })();
